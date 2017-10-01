@@ -58,3 +58,4 @@ You can control how an action travel through the cycle by extending it with thes
 | hide | bool | false | If `true`, the action will not be sent at all to the server. This may be useful for non-critical events |
 | broadcast | bool | false | If `true`, the action will be dispatched to every client that shares the same credentials (short cycle for sender, long cycle for receivers) |
 
+![Alt text](demo/diagram.png "Action cycles")
