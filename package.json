@@ -1,0 +1,38 @@
+{
+  "name": "redux-full-socket",
+  "version": "0.0.1",
+  "private": true,
+  "babel": {
+    "presets": [
+      "es2015",
+      "stage-0"
+    ]
+  },
+  "dependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-core": "^6.26.0",
+    "babel-preset-es2015": "^6.24.1",
+    "babel-preset-stage-0": "^6.24.1",
+    "babel-watch": "^2.0.7",
+    "react": "^15.6.1",
+    "react-dom": "^15.6.1",
+    "react-redux": "^5.0.6",
+    "react-scripts": "1.0.13",
+    "redux": "^3.7.2",
+    "url": "^0.11.0",
+    "ws": "^3.2.0"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "server": "babel-watch server",
+    "build": "react-scripts build",
+    "test": "react-scripts test --env=jsdom",
+    "eject": "react-scripts eject"
+  },
+  "proxy": {
+    "/rfs": {
+      "target": "http://localhost:4000",
+      "ws": true
+    }
+  }
+}
