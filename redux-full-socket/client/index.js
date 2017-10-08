@@ -43,7 +43,10 @@ export const initClientStoreEnhancer = (path, token) => new Promise(resolve => {
 				store = next(
 					reducerWrapper(reducer),
 					action.payload || initialState,
-					enhancer ? compose(applyMiddleware(middleware), enhancer) : applyMiddleware(middleware)
+					compose(
+						applyMiddleware(middleware),
+						...enhancer ? [enhancer] : []
+					)
 				);
 				return store;
 			})

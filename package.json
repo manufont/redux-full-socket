@@ -18,7 +18,9 @@
     "react-dom": "^15.6.1",
     "react-redux": "^5.0.6",
     "react-scripts": "1.0.13",
+    "redis": "^2.8.0",
     "redux": "^3.7.2",
+    "redux-persist": "^4.10.1",
     "url": "^0.11.0",
     "ws": "^3.2.0"
   },

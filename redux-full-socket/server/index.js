@@ -1,7 +1,9 @@
-import { createStore, combineReducers, applyMiddleware } from 'redux';
-import fs from 'fs';
+import { createStore, combineReducers, applyMiddleware, compose } from 'redux';
+import { persistStore, autoRehydrate } from 'redux-persist'
 import WebSocket from 'ws';
 import url from 'url';
+
+import getRedisAsyncStorage from './redis';
 
 const dispatchToClient = reducer => (state = {}, action) => ({
   ...state,
@@ -16,14 +18,14 @@ export const serverStoreEnhancer = (path, clientReducer) => {
       server: reducer
     });
 
-    const savedStore = fs.existsSync(path)
-      ? JSON.parse(fs.readFileSync(path, 'utf-8'))
-      : initialState;
-
-    const store = next(reducers, savedStore, enhancer);
-    store.subscribe(() =>
-      fs.writeFile(path, JSON.stringify(store.getState()), 'utf-8', ()=>{})
+    const store = next(
+      reducers,
+      compose(
+        autoRehydrate(),
+        ...enhancer ? [enhancer] : []
+      )
     );
+    persistStore(store, {storage: getRedisAsyncStorage()});
 
     return store;
   }

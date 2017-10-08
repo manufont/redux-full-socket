@@ -17,7 +17,7 @@ The library consists of a server and 2 storeEnhancers: one for the client, one f
 
 The project is at its very beginning.
 
-For now, the server-side persistence is done by stringifying the store into a file. Not good.
+For now, the server-side persistence is achieved by using [redux-persist](https://github.com/rt2zz/redux-persist) with a custom async storage using [node_redis](https://github.com/NodeRedis/node_redis).
 
 The user management is done by asking the client a token, with no verification at all. Also not good.
 
