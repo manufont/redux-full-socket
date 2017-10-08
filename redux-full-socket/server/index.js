@@ -5,14 +5,22 @@ import url from 'url';
 
 import getRedisAsyncStorage from './redis';
 
-const dispatchToClient = reducer => (state = {}, action) => ({
-  ...state,
-  [action.token]: reducer(state[action.token], action)
-});
+const dispatchToClient = reducer => (state = {}, action) => {
+  if(action.token){
+    return {
+      ...state,
+      [action.token]: reducer(state[action.token], action)
+    }
+  }else{
+    return state;
+  }
+};
 
-export const serverStoreEnhancer = (path, clientReducer) => {
+export const serverStoreEnhancer = (clientReducer, dbPrefix) => {
 
-  return next => (reducer, initialState={}, enhancer) => {
+  const redisAsyncStorage = getRedisAsyncStorage(dbPrefix);
+
+  return next => (reducer, initialState, enhancer) => {
     const reducers = combineReducers({
       clients: dispatchToClient(clientReducer),
       server: reducer
@@ -20,12 +28,17 @@ export const serverStoreEnhancer = (path, clientReducer) => {
 
     const store = next(
       reducers,
+      initialState,
       compose(
-        autoRehydrate(),
-        ...enhancer ? [enhancer] : []
+        ...enhancer ? [enhancer] : [],
+        autoRehydrate()
       )
     );
-    persistStore(store, {storage: getRedisAsyncStorage()});
+
+    persistStore(store, {
+      storage: redisAsyncStorage,
+      keyPrefix: dbPrefix
+    });
 
     return store;
   }
@@ -45,14 +58,13 @@ const cleanAction = action => ({
   broadcast: undefined,
   token: undefined,
   sync: undefined
-})
-
+});
 
 const augmentAction = (action, token, socketId) => ({
   ...action,
   token,
   socketId
-})
+});
 
 const id = () =>
   '_' + Math.random().toString(36).substr(2, 9);
@@ -96,4 +108,4 @@ export const startServer = (store, socketOptions) => {
   });
 
   return socketServer
-}
+};

@@ -1,24 +1,13 @@
 import redis from 'redis';
 
-const getRedisAsyncStorage = () => {
+const getRedisAsyncStorage = (prefix) => {
 	const client = redis.createClient();
-	const prefix = 'rfs/';
-	const redisKey = key => prefix+key;
-
 
 	return {
-		getItem: (key, callback) => {
-			client.get(redisKey(key), callback)
-		},
-		setItem: (key, value, callback) => {
-			client.set(redisKey(key), value, callback)
-		},
-		removeItem: (key, callback) => {
-			client.del(redisKey(key), callback)
-		},
-		getAllKeys: (callback) => {
-			client.keys(redisKey('*'), callback)
-		}
+		getItem: (key, callback) => client.get(key, callback),
+		setItem: (key, value, callback) => client.set(key, value, callback),
+		removeItem: (key, callback) => client.del(key, callback),
+		getAllKeys: (callback) => client.keys(prefix+'*', callback)
 	};
 
 }

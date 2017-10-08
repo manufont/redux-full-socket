@@ -3,7 +3,7 @@ import { createStore } from 'redux';
 import clientReducer from '../src/reducers';
 import serverReducer from './reducers';
 
-const store = createStore(serverReducer, serverStoreEnhancer('./data.json', clientReducer));
+const store = createStore(serverReducer, serverStoreEnhancer(clientReducer, 'rfs:'));
 
 const server = startServer(store, { port: 4000 });
 
