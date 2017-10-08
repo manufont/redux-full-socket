@@ -2,6 +2,6 @@ import { combineReducers } from 'redux';
 
 import counter from './counterReducer';
 
-const appReducer = combineReducers({ counter });
+const clientReducer = combineReducers({ counter });
 
-export default appReducer;
+export default clientReducer;

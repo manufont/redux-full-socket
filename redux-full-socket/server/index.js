@@ -3,28 +3,30 @@ import fs from 'fs';
 import WebSocket from 'ws';
 import url from 'url';
 
+const dispatchToClient = reducer => (state = {}, action) => ({
+  ...state,
+  [action.token]: reducer(state[action.token], action)
+});
 
-export const initStore = (path, appReducer, serverReducer, middlewares=[]) => {
-  const clientsReducer = (state = {}, action) => ({
-    ...state,
-    [action.token]: appReducer(state[action.token], action)
-  })
+export const serverStoreEnhancer = (path, clientReducer) => {
 
-  const reducer = combineReducers({
-    clients: clientsReducer,
-    server: serverReducer
-  });
+  return next => (reducer, initialState={}, enhancer) => {
+    const reducers = combineReducers({
+      clients: dispatchToClient(clientReducer),
+      server: reducer
+    });
 
-  const savedStore = fs.existsSync(path)
-    ? JSON.parse(fs.readFileSync(path, 'utf-8'))
-    : {};
+    const savedStore = fs.existsSync(path)
+      ? JSON.parse(fs.readFileSync(path, 'utf-8'))
+      : initialState;
 
-  let store = createStore(reducer, savedStore, applyMiddleware(...middlewares));
+    const store = next(reducers, savedStore, enhancer);
+    store.subscribe(() =>
+      fs.writeFile(path, JSON.stringify(store.getState()), 'utf-8', ()=>{})
+    );
 
-  store.subscribe(() =>
-    fs.writeFile(path, JSON.stringify(store.getState()), 'utf-8', ()=>{})
-  );
-  return store
+    return store;
+  }
 }
 
 
@@ -44,10 +46,10 @@ const cleanAction = action => ({
 })
 
 
-const augmentAction = (action, token, socket) => ({
+const augmentAction = (action, token, socketId) => ({
   ...action,
   token,
-  socket
+  socketId
 })
 
 const id = () =>
@@ -67,7 +69,7 @@ export const startServer = (store, socketOptions) => {
       const message = JSON.stringify(cleanAction(action));
       if(action.broadcast){
         Object.keys(tokenMap[token]).forEach( key => {
-          if(action.sync || action.socket !== key){
+          if(action.sync || action.socketId !== key){
             tokenMap[token][key].send(message)
           }
         });

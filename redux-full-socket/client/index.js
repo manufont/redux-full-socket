@@ -1,4 +1,4 @@
-import { createStore, applyMiddleware } from 'redux';
+import { createStore, applyMiddleware, compose } from 'redux';
 
 
 const id = () =>
@@ -7,7 +7,9 @@ const id = () =>
 const reducerWrapper = reducer => (state, action) => 
 	action.type === 'INIT' ? action.payload : reducer(state, action);
 
-export const initStore = (path, token, reducer, middlewares=[]) => new Promise(resolve => {
+
+
+export const initClientStoreEnhancer = (path, token) => new Promise(resolve => {
 
 	const getWebSocket = token =>
 		new WebSocket(
@@ -37,12 +39,14 @@ export const initStore = (path, token, reducer, middlewares=[]) => new Promise(r
 	const onmessage = message => {
    		const action = JSON.parse(message.data);
 		if(action.type === 'INIT' && !store){
-			store = createStore(
-				reducerWrapper(reducer),
-				action.payload,
-				applyMiddleware(middleware, ...middlewares)
-			);
-			resolve(store);
+			resolve(next => (reducer, initialState={}, enhancer) => {
+				store = next(
+					reducerWrapper(reducer),
+					action.payload || initialState,
+					enhancer ? compose(applyMiddleware(middleware), enhancer) : applyMiddleware(middleware)
+				);
+				return store;
+			})
 		}else if(!action.id || !seenActions[action.id]){
 			store.dispatch(action);
 			if(action.id){

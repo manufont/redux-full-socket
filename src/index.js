@@ -1,15 +1,17 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
+import { createStore } from 'redux';
 
-import { initStore } from './redux-full-socket';
+import { initClientStoreEnhancer } from './redux-full-socket';
 import App from './App';
 import registerServiceWorker from './registerServiceWorker';
-import appReducer from './reducers';
+import clientReducer from './reducers';
 
 const token = localStorage.getItem('token') || '';
 
-initStore('ws://localhost:3000/rfs', token, appReducer).then(store => {
+initClientStoreEnhancer('ws://localhost:3000/rfs', token).then(storeEnhancer => {
+	const store = createStore(clientReducer, storeEnhancer);
 	ReactDOM.render(
 		<Provider store={store}>
 			<App />

@@ -11,6 +11,8 @@ Redux is used on both client and server in order to reuse client reducer. It has
 
 The server-side store can include additionnal reducers for server-specific tasks.
 
+The library consists of a server and 2 storeEnhancers: one for the client, one for the server.
+
 ## progress
 
 The project is at its very beginning.
@@ -38,13 +40,13 @@ npm start
 ```
 
 It'll open the demo app in browser, which is a counter with (ultra basic) user management.
-redux-full-socket is in `src/` folder. Feel free to try and modify it.
+Feel free to try and modify  the `/redux-full-socket` folder.
 
 ## documentation
 
 ### methods
 
-No documentation yet. You can check out the methods exported by `src/redux-full-socket`, and see how they're called in `server/` and `src/`.
+No documentation yet. You can check out the methods exported by `/redux-full-socket`, and see how they're called in `server/` and `src/`.
 
 ### actions
 
