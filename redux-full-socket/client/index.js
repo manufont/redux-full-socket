@@ -5,7 +5,7 @@ const id = () =>
   '_' + Math.random().toString(36).substr(2, 9);
 
 const reducerWrapper = reducer => (state, action) => 
-	action.type === 'INIT' ? action.payload : reducer(state, action);
+	reducer(action.type === 'INIT' ? action.payload : state, action);
 
 
 
