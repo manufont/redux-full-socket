@@ -1,6 +1,6 @@
 # redux-full-socket
 
-An experimental full stack using redux and websockets.
+An experimental client-server webapp structure using redux and websockets.
 
 The purpose of this project is to extends redux life cycle outside the client with websockets, by providing an API to its dispached actions.
 
@@ -11,15 +11,13 @@ Redux is used on both client and server in order to reuse client reducer. It has
 
 The server-side store can include additionnal reducers for server-specific tasks.
 
-The library consists of a server and 2 storeEnhancers: one for the client, one for the server.
+The library consists of a server and 2 redux store enhancers: one for the client, one for the server.
 
 ## progress
 
 The project is at its very beginning.
 
 For now, the server-side persistence is achieved by using [redux-persist](https://github.com/rt2zz/redux-persist) with a custom async storage using [node_redis](https://github.com/NodeRedis/node_redis).
-
-The user management is done by asking the client a token, with no verification at all. Also not good.
 
 The server-side state architecture needs to be improved.
 
