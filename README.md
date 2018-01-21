@@ -1,6 +1,6 @@
 # redux-full-socket
 
-An experimental client-server message-driver structure using redux and websockets.
+An experimental client-server message-driven structure using redux and websockets.
 
 The purpose of this project is to extends redux life cycle outside the client with websockets, by providing an API to its dispached actions.
 
