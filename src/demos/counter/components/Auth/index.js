@@ -19,15 +19,17 @@ class Auth extends Component {
 		this.setState({ token });
 	}
 
-	setToken = () => {
+	setToken = e => {
+		e.preventDefault();
 		localStorage.setItem('token', this.state.token);
 		this.props.actions.setToken(this.state.token);
+		return false;
 	}
 
 	render(){
 
 		return (
-			<div>
+			<form onSubmit={this.setToken}>
 				<input
 					type='text'
 					name='token'
@@ -35,10 +37,8 @@ class Auth extends Component {
 					value={this.state.token || ''}
 					onChange={this.onTokenChange}
 				/>
-				<button onClick={this.setToken}>
-					set token
-				</button>
-			</div>
+				<input type="submit" value="Set token" />
+			</form>
 		);
 	}
 }

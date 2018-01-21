@@ -17,6 +17,8 @@
     "react": "^15.6.1",
     "react-dom": "^15.6.1",
     "react-redux": "^5.0.6",
+    "react-router": "^4.2.0",
+    "react-router-dom": "^4.2.2",
     "react-scripts": "1.0.13",
     "redis": "^2.8.0",
     "redux": "^3.7.2",
@@ -32,8 +34,12 @@
     "eject": "react-scripts eject"
   },
   "proxy": {
-    "/rfs": {
+    "/rfs-counter": {
       "target": "http://localhost:4000",
+      "ws": true
+    },
+    "/rfs-arena": {
+      "target": "http://localhost:4001",
       "ws": true
     }
   }

@@ -1,31 +1,21 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { Provider } from 'react-redux';
-import { createStore } from 'redux';
+import { BrowserRouter, Link, Route } from 'react-router-dom';
 
-import { initClientStoreEnhancer } from './redux-full-socket';
-import App from './App';
-import registerServiceWorker from './registerServiceWorker';
-import clientReducer from './reducers';
+import CounterApp from 'demos/counter';
+import ArenaApp from 'demos/arena';
+import registerServiceWorker from 'registerServiceWorker';
 
-const token = localStorage.getItem('token') || '';
-
-const displayConnectionError = setTimeout(() =>
-	ReactDOM.render(
-		<span>Cannot connect to server</span>,
-		document.getElementById('root')
-	),
-	500
+ReactDOM.render(
+	<BrowserRouter>
+		<div>
+	  	<Link to="/counter">Counter</Link> | 
+	  	<Link to="/arena">Arena</Link>
+			<Route path="/counter" component={CounterApp}/>
+			<Route path="/arena" component={ArenaApp}/>
+  	</div>
+	</BrowserRouter>,
+	document.getElementById('root')
 );
 
-
-initClientStoreEnhancer('ws://localhost:3000/rfs', token).then(storeEnhancer => {
-	clearTimeout(displayConnectionError);
-	const store = createStore(clientReducer, storeEnhancer);
-	ReactDOM.render(
-		<Provider store={store}>
-			<App />
-		</Provider>,
-		document.getElementById('root'));
-	registerServiceWorker();
-});
+registerServiceWorker();
