@@ -41,6 +41,10 @@
     "/rfs-arena": {
       "target": "http://localhost:4001",
       "ws": true
+    },
+    "/rfs-snake": {
+      "target": "http://localhost:4002",
+      "ws": true
     }
   }
 }

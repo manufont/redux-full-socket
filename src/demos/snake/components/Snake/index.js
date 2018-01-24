@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
-import * as arenaActions from './actions';
+import * as snakeActions from './actions';
 
 const mod = (number, n) => ((number%n)+n)%n;
 
@@ -12,7 +12,7 @@ const hueFromString = str =>
 		return hash & hash;
 	}, 0), 360)
 
-class Arena extends Component {
+class Snake extends Component {
 
 	constructor(props){
 		super(props);
@@ -70,7 +70,7 @@ class Arena extends Component {
 		e.preventDefault();
 		const name = this.state.name;
 		if(name){
-			if(!this.props.arena[name]){
+			if(!this.props.positions[name]){
 				this.props.actions.addPlayer(name);
 			}
 			this.setState({
@@ -88,9 +88,9 @@ class Arena extends Component {
 
 	render(){
 
-		const { arena } = this.props;
+		const { positions, food } = this.props;
 		const { player: selectedPlayer, name } = this.state;
-		const allPlayers = Object.keys(arena);
+		const allPlayers = Object.keys(positions);
 
 		const styles = {
 			arena: {
@@ -99,15 +99,24 @@ class Arena extends Component {
 				position: 'relative',
 				border: '1px solid black'
 			},
-			player: player => ({
+			playerPart: (player, position) => ({
 				position: 'absolute',
 				width: 50,
 				height: 50,
-				top: arena[player].y*50,
-				left: arena[player].x*50,
+				top: position.y*50,
+				left: position.x*50,
 				backgroundColor: `hsl(${hueFromString(player)}, 100%, 60%)`,
 				opacity: player === selectedPlayer ? 1 : 0.5
-			})
+			}),
+			food: {
+				position: 'absolute',
+				width: 30,
+				height: 30,
+				top: food.y*50+10,
+				left: food.x*50+10,
+				backgroundColor: 'black',
+				borderRadius: '50%'
+			}
 		}
 
 		return (
@@ -122,14 +131,15 @@ class Arena extends Component {
 					{selectedPlayer && <button onClick={this.removePlayer}>Remove player</button>}
 				</div>
 				<div style={styles.arena}>
-					{allPlayers.map((player, index) => (
+					{allPlayers.map(player => positions[player].map((position, index) => (
 						<div
 						key={index}
-						style={styles.player(player)}
+						style={styles.playerPart(player, position)}
 						onClick={() => this.setPlayer(player)}>
-							{player}
+							{index === 0 && player}
 						</div>
-					))}
+					)))}
+					<div style={styles.food} />
 				</div>
 			</div>
 
@@ -138,11 +148,12 @@ class Arena extends Component {
 }
 
 const mapDispatchToProps = dispatch => ({
-	actions: bindActionCreators(arenaActions, dispatch)
+	actions: bindActionCreators(snakeActions, dispatch)
 });
 
 const mapStateToProps = state => ({
-	arena: state.arena
+	positions: state.snake.positions,
+	food: state.snake.food
 })
 
-export default connect(mapStateToProps, mapDispatchToProps)(Arena);
+export default connect(mapStateToProps, mapDispatchToProps)(Snake);

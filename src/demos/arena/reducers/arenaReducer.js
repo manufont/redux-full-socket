@@ -1,8 +1,29 @@
 const defaultState = {
 };
 
+const up = position => ({
+  x: position.x,
+  y: Math.max(position.y - 1, 0)
+});
+
+const down = position => ({
+  x: position.x,
+  y: Math.min(position.y + 1, 10)
+});
+
+const left = position => ({
+  x: Math.max(position.x - 1, 0),
+  y: position.y
+});
+
+const right = position => ({
+  x: Math.min(position.x + 1, 10),
+  y: position.y
+});
+
 export default function arenaReducer(state=defaultState, action) {
   const player = action.payload;
+  const position = state[player];
   switch (action.type) {
     case 'ADD':
       return {
@@ -16,46 +37,26 @@ export default function arenaReducer(state=defaultState, action) {
       const newState = {...state};
       delete newState[player];
       return newState;
-    case 'UP': {
-      const position = state[player];
+    case 'UP':
       return {
         ...state,
-        [player]: {
-          ...position,
-          y: Math.max(position.y - 1, 0)
-        }
-      };
-    }
-    case 'DOWN': {
-      const position = state[player];
+        [player]: up(position)
+      }
+    case 'DOWN':
       return {
         ...state,
-        [player]: {
-          ...position,
-          y: Math.min(position.y + 1, 10)
-        }
-      };
-    }
-    case 'LEFT': {
-      const position = state[player];
+        [player]: down(position)
+      }
+    case 'LEFT':
       return {
         ...state,
-        [player]: {
-          ...position,
-          x: Math.max(position.x - 1, 0)
-        }
-      };
-    }
-    case 'RIGHT': {
-      const position = state[player];
+        [player]: left(position)
+      }
+    case 'RIGHT':
       return {
         ...state,
-        [player]: {
-          ...position,
-          x: Math.min(position.x + 1, 10)
-        }
-      };
-    }
+        [player]: right(position)
+      }
     default:
       return state;
   }
