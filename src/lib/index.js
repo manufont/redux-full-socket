@@ -1,4 +1,4 @@
-import { createStore, applyMiddleware, compose } from 'redux';
+import { applyMiddleware, compose } from 'redux';
 
 
 const id = () =>
@@ -9,7 +9,7 @@ const reducerWrapper = reducer => (state, action) =>
 
 
 
-export const initClientStoreEnhancer = (path, token) => new Promise(resolve => {
+const initClientStoreEnhancer = (path, token) => new Promise(resolve => {
 
 	const getWebSocket = token =>
 		new WebSocket(
@@ -60,3 +60,5 @@ export const initClientStoreEnhancer = (path, token) => new Promise(resolve => {
 
 	socket.onmessage = onmessage;
 });
+
+export default initClientStoreEnhancer;

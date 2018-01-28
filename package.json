@@ -22,8 +22,7 @@
     "react-scripts": "1.0.13",
     "redis": "^2.8.0",
     "redux": "^3.7.2",
-    "redux-persist": "^4.10.1",
-    "url": "^0.11.0",
+    "redux-full-socket-server": "git+https://git@github.com/manufont/redux-full-socket-server.git",
     "ws": "^3.2.0"
   },
   "scripts": {
@@ -33,6 +32,7 @@
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject"
   },
+  "homepage": "./",
   "proxy": {
     "/rfs-counter": {
       "target": "http://localhost:4000",

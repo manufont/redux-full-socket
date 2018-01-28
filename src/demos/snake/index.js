@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Provider } from 'react-redux';
 import { createStore } from 'redux';
 
-import { initClientStoreEnhancer } from 'redux-full-socket';
+import initClientStoreEnhancer from 'lib';
 import clientReducer from './reducers';
 import { Auth, Snake } from './components';
 

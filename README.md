@@ -53,8 +53,7 @@ npm start
 ```
 
 It'll open the demo app in browser, which is a counter with (ultra basic) user management.
-Feel free to try and modify  the `/redux-full-socket` folder.
 
 ## documentation
 
-No documentation yet. Check out the methods exported by `/redux-full-socket`, and see how they're called in `server/` and `src/`.
+No documentation yet. Check out the methods exported by `/src/lib` and [redux-full-socket-server](https://github.com/manufont/redux-full-socket-server), and see how they're called in `server/` and `src/demos/`.

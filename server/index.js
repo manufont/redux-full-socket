@@ -1,4 +1,4 @@
-import { serverStoreEnhancer, startServer } from './redux-full-socket';
+import startServer, { serverStoreEnhancer } from 'redux-full-socket-server';
 import { createStore } from 'redux';
 import counterClientReducer from '../src/demos/counter/reducers';
 import arenaClientReducer from '../src/demos/arena/reducers';
