@@ -28,7 +28,7 @@ class SnakeApp extends Component {
 			500
 		);
 
-		initClientStoreEnhancer('ws://localhost:3000/rfs-snake', token).then(storeEnhancer => {
+		initClientStoreEnhancer(process.env.REACT_APP_WS_ROUTE+'rfs-snake', token).then(storeEnhancer => {
 			clearTimeout(this.displayConnectionError);
 			this.store = createStore(clientReducer, storeEnhancer);
 			this.setState({

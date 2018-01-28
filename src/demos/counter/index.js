@@ -28,7 +28,7 @@ class CounterApp extends Component {
 			500
 		);
 
-		initClientStoreEnhancer('ws://localhost:3000/rfs-counter', token).then(storeEnhancer => {
+		initClientStoreEnhancer(process.env.REACT_APP_WS_ROUTE+'rfs-counter', token).then(storeEnhancer => {
 			clearTimeout(this.displayConnectionError);
 			this.store = createStore(clientReducer, storeEnhancer);
 			this.setState({
