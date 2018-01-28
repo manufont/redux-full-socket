@@ -5,7 +5,6 @@ import { BrowserRouter, Link, Route } from 'react-router-dom';
 import CounterApp from 'demos/counter';
 import ArenaApp from 'demos/arena';
 import SnakeApp from 'demos/snake';
-import registerServiceWorker from 'registerServiceWorker';
 
 ReactDOM.render(
 	<BrowserRouter>
@@ -20,5 +19,3 @@ ReactDOM.render(
 	</BrowserRouter>,
 	document.getElementById('root')
 );
-
-registerServiceWorker();
