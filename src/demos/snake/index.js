@@ -6,6 +6,10 @@ import initClientStoreEnhancer from 'lib';
 import clientReducer from './reducers';
 import { Auth, Snake } from './components';
 
+const getSocketURL = socket =>
+	(window.location.protocol === 'https' ? 'wss' : 'ws') +
+	'://' + window.location.host + process.env.REACT_APP_BASE_ROUTE + socket;
+
 
 class SnakeApp extends Component {
 
@@ -19,7 +23,10 @@ class SnakeApp extends Component {
 	}
 
 	componentWillMount(){
-		const token = localStorage.getItem('token') || '';
+		const token = localStorage.getItem('token') || 'default';
+		if(token === 'default'){
+			localStorage.setItem('token', 'default');
+		}
 
 		this.displayConnectionError = setTimeout(() =>
 			this.setState({
@@ -28,7 +35,7 @@ class SnakeApp extends Component {
 			500
 		);
 
-		initClientStoreEnhancer(process.env.REACT_APP_WS_ROUTE+'rfs-snake', token).then(storeEnhancer => {
+		initClientStoreEnhancer(getSocketURL('/rfs-snake'), token).then(storeEnhancer => {
 			clearTimeout(this.displayConnectionError);
 			this.store = createStore(clientReducer, storeEnhancer);
 			this.setState({
@@ -41,7 +48,7 @@ class SnakeApp extends Component {
 		const { ready, error } = this.state;
 
 		if(error){
-			return <span>Cannot connect to server</span>;
+			return <div>Cannot connect to server</div>;
 		}else if(ready){
 			return (
 				<Provider store={this.store}>
