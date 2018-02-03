@@ -7,12 +7,20 @@ The purpose of this project is to extends redux life cycle outside the client wi
 Redux is used on both client and server in order to reuse client reducer. It has several benefits:
 - CRUD tasks only needs to be implemented once
 - The backend behaviour is entirely predictable: most server verifications may be avoided, resulting in an instant feedback for the client
-- Actions can be broadcasted to every client that shares the same token (e.g mobile & destop), which lets you maintain a cross-device synced state
+- Actions can be broadcasted to every client that shares the same channel (e.g mobile & destop), which lets you maintain a cross-device synced state
 
 The server-side store can include additionnal reducers for server-specific tasks.
 
 The library consists of a server and 2 redux store enhancers: one for the client, one for the server.
 
+
+## demos
+
+[Counter](http://www.manufont.com/redux-full-socket/counter)
+
+[Arena](http://www.manufont.com/redux-full-socket/arena)
+
+[Snake](http://www.manufont.com/redux-full-socket/snake)
 
 ## actions API
 
