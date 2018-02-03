@@ -54,17 +54,23 @@ const isBlocked = (position, positions) =>
   collision(right(position), positions);
   
 
-const handleMove = (player, position, action, state) => {
+const handleMove = (player, move, action, state) => {
+  if(!state.positions[player]){
+    return state;
+  }
+
+  const oldPosition = state.positions[player][0];
+  const newPosition = move(oldPosition)
   const { food, positions } = state;
 
-  const collide = collision(position, positions);
-  const extend = !collide && posCmp(position, food);
+  const collide = collision(newPosition, positions);
+  const extend = !collide && posCmp(newPosition, food);
   const nextPositions = collide ? positions : {
     ...positions,
-    [player]: [position, ...positions[player].slice(0, extend ? undefined : -1)]
+    [player]: [newPosition, ...positions[player].slice(0, extend ? undefined : -1)]
   };
 
-  if(isBlocked(position, nextPositions)){
+  if(isBlocked(newPosition, nextPositions)){
     delete nextPositions[player];
   }
 
@@ -99,22 +105,14 @@ export default function arenaReducer(state=defaultState, action) {
         ...state,
         positions: newPositions
       };
-    case 'UP': {
-      const position = state.positions[player][0];
-      return handleMove(player, up(position), action, state);
-    }
-    case 'DOWN': {
-      const position = state.positions[player][0];
-      return handleMove(player, down(position), action, state);
-    }
-    case 'LEFT': {
-      const position = state.positions[player][0];
-      return handleMove(player, left(position), action, state);
-    }
-    case 'RIGHT': {
-      const position = state.positions[player][0];
-      return handleMove(player, right(position), action, state);
-    }
+    case 'UP':
+      return handleMove(player, up, action, state);
+    case 'DOWN':
+      return handleMove(player, down, action, state);
+    case 'LEFT':
+      return handleMove(player, left, action, state);
+    case 'RIGHT':
+      return handleMove(player, right, action, state);
     default:
       return state;
   }

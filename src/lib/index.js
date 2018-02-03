@@ -9,22 +9,24 @@ const reducerWrapper = reducer => (state, action) =>
 
 
 
-const initClientStoreEnhancer = (path, token) => new Promise(resolve => {
+const initClientStoreEnhancer = (path, channel) => new Promise(resolve => {
 
-	const getWebSocket = token =>
+	const getWebSocket = channel =>
 		new WebSocket(
-			`${path}?token=${token}`
+			`${path}?channel=${channel}`
 		);
 
-	let socket = getWebSocket(token);
+	let socket = getWebSocket(channel);
 	let seenActions = {};
 	let store = null;
 
 	const middleware = store => next => action => {
-		if(action.type === 'SET_TOKEN'){
+		if(action.type === 'RFS_SET_CHANNEL'){
 			socket.close();
 			socket = getWebSocket(action.payload);
 			socket.onmessage = onmessage;
+		}else if(action.type === 'RFS_CLOSE'){
+			socket.close();
 		}else{
 			if(!action.hide && !action.id){
 				action.id = id();

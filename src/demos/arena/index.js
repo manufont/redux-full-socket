@@ -1,66 +1,153 @@
 import React, { Component } from 'react';
-import { Provider } from 'react-redux';
-import { createStore } from 'redux';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 
-import initClientStoreEnhancer from 'lib';
-import clientReducer from './reducers';
-import { Auth, Arena } from './components';
+import * as arenaActions from './actions';
 
-const getSocketURL = socket =>
-	(window.location.protocol === 'https' ? 'wss' : 'ws') +
-	'://' + window.location.host + process.env.REACT_APP_BASE_ROUTE + socket;
+const mod = (number, n) => ((number%n)+n)%n;
 
+const hueFromString = str => 
+	mod(str.split('').reduce((acc, val) => {
+		const hash = val.charCodeAt()*17 + ((acc << 5) - acc)
+		return hash & hash;
+	}, 0), 360)
 
-class ArenaApp extends Component {
+class Arena extends Component {
 
 	constructor(props){
 		super(props);
 
 		this.state = {
-			ready: false,
-			error: false
+			player: null,
+			name: ''
 		}
 	}
 
-	componentWillMount(){
-		const token = localStorage.getItem('token') || 'default';
-		if(token === 'default'){
-			localStorage.setItem('token', 'default');
-		}
+	componentWillMount() {
+		document.body.addEventListener('keydown', this.onKeyDown);
+	}
 
-		this.displayConnectionError = setTimeout(() =>
-			this.setState({
-				error: true
-			}),
-			500
-		);
-		initClientStoreEnhancer(getSocketURL('/rfs-arena'), token).then(storeEnhancer => {
-			clearTimeout(this.displayConnectionError);
-			this.store = createStore(clientReducer, storeEnhancer);
-			this.setState({
-				ready: true
-			})
+	componentWillUnMount() {
+		document.body.removeEventListener('keydown', this.onKeyDown);
+	}
+
+	onKeyDown = e => {
+		const { up, down, left, right } = this.props.actions;
+		const { player } = this.state;
+
+		if(player){
+			e = e || window.event;
+			switch(e.keyCode){
+				case 38:
+					up(player);
+					break;
+				case 40:
+					down(player);
+					break;
+				case 37:
+					left(player);
+					break;
+				case 39:
+					right(player);
+					break;
+				default:
+					break;
+			}
+		}
+	}
+
+	setPlayer = player => {
+		this.setState({ player });
+	}
+
+	handleChange = e => {
+		this.setState({
+			[e.target.name]: e.target.value
 		});
 	}
 
-	render() {
-		const { ready, error } = this.state;
+	onArenaTouch = (e, a) => {
+		console.log('e', e);
+		console.log('target', a.target);
+	}
 
-		if(error){
-			return <div>Cannot connect to server</div>;
-		}else if(ready){
-			return (
-				<Provider store={this.store}>
-					<div>
-							<Auth />
-							<Arena />
-						</div>
-				</Provider>
-			);
-		}else{
-			return <span>Connecting...</span>;
+	addPlayer = e => {
+		e.preventDefault();
+		const name = this.state.name;
+		if(name){
+			if(!this.props.arena[name]){
+				this.props.actions.addPlayer(name);
+			}
+			this.setState({
+				player: name,
+				name: ''
+			});
 		}
+		return false;
+	}
+
+	removePlayer = () => {
+		this.props.actions.removePlayer(this.state.player);
+		this.setPlayer(null);
+	}
+
+	render(){
+
+		const { arena } = this.props;
+		const { player: selectedPlayer, name } = this.state;
+		const allPlayers = Object.keys(arena);
+
+		const styles = {
+			arena: {
+				width: 550,
+				height: 550,
+				position: 'relative',
+				border: '1px solid black'
+			},
+			player: player => ({
+				position: 'absolute',
+				width: 50,
+				height: 50,
+				top: arena[player].y*50,
+				left: arena[player].x*50,
+				backgroundColor: `hsl(${hueFromString(player)}, 100%, 60%)`,
+				opacity: player === selectedPlayer ? 1 : 0.5
+			})
+		}
+
+		return (
+			<div>
+				<form onSubmit={this.addPlayer}>
+					<input type='text' autoComplete="off" name='name' value={name} onChange={this.handleChange} placeholder='player name'/>
+					<input type='submit' value="Add player"/>
+				</form>
+				Click on a square to select, use arrow keys to control
+				<div>
+					<span>Selected player: {selectedPlayer}</span>
+					{selectedPlayer && <button onClick={this.removePlayer}>Remove player</button>}
+				</div>
+				<div style={styles.arena} onTouchStart={this.onArenaTouch}>
+					{allPlayers.map((player, index) => (
+						<div
+						key={index}
+						style={styles.player(player)}
+						onClick={() => this.setPlayer(player)}>
+							{player}
+						</div>
+					))}
+				</div>
+			</div>
+
+		);
 	}
 }
 
-export default ArenaApp;
+const mapDispatchToProps = dispatch => ({
+	actions: bindActionCreators(arenaActions, dispatch)
+});
+
+const mapStateToProps = state => ({
+	arena: state.arena
+})
+
+export default connect(mapStateToProps, mapDispatchToProps)(Arena);

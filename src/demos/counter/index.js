@@ -1,67 +1,54 @@
 import React, { Component } from 'react';
-import { Provider } from 'react-redux';
-import { createStore } from 'redux';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 
-import initClientStoreEnhancer from 'lib';
-import clientReducer from './reducers';
-import { Auth, Counter } from './components';
+import * as counterActions from './actions';
 
-const getSocketURL = socket =>
-	(window.location.protocol === 'https' ? 'wss' : 'ws') +
-	'://' + window.location.host + process.env.REACT_APP_BASE_ROUTE + socket;
-
-
-class CounterApp extends Component {
-
+class Counter extends Component {
 	constructor(props){
 		super(props);
 
 		this.state = {
-			ready: false,
-			error: false
-		}
+			sync: false,
+			hide: false,
+			broadcast: false,
+		};
 	}
 
-	componentWillMount(){
-		const token = localStorage.getItem('token') || 'default';
-		if(token === 'default'){
-			localStorage.setItem('token', 'default');
-		}
-
-		this.displayConnectionError = setTimeout(() =>
-			this.setState({
-				error: true
-			}),
-			500
-		);
-
-		initClientStoreEnhancer(getSocketURL('/rfs-counter'), token).then(storeEnhancer => {
-			clearTimeout(this.displayConnectionError);
-			this.store = createStore(clientReducer, storeEnhancer);
-			this.setState({
-				ready: true
-			})
+	handleChange = e => {
+		this.setState({
+			[e.target.name]: e.target.checked
 		});
 	}
 
-	render() {
-		const { ready, error } = this.state;
+	inc = () => {
+		this.props.actions.inc(this.state);
+	}
 
-		if(error){
-			return <div>Cannot connect to server</div>;
-		}else if(ready){
-			return (
-				<Provider store={this.store}>
-					<div>
-							<Auth />
-							<Counter />
-						</div>
-				</Provider>
-			);
-		}else{
-			return <span>Connecting...</span>;
-		}
+	dec = () => {
+		this.props.actions.dec(this.state);
+	}
+
+	render(){
+		return (
+			<div>
+				<label>dispatch at server response (sync)<input type="checkbox" name="sync" onChange={this.handleChange} /></label><br/>
+				<label>hide from server (hide)<input type="checkbox" name="hide" onChange={this.handleChange} /></label><br/>
+				<label>dispatch on clients sharing same token (broadcast)<input type="checkbox" name="broadcast" onChange={this.handleChange} /></label><br/>
+				{this.props.value}
+				<button onClick={this.inc}>inc</button>
+				<button onClick={this.dec}>dec</button>
+			</div>
+		);
 	}
 }
 
-export default CounterApp;
+const mapDispatchToProps = dispatch => ({
+  actions: bindActionCreators(counterActions, dispatch)
+});
+
+const mapStateToProps = state => ({
+	value: state.counter.value
+})
+
+export default connect(mapStateToProps, mapDispatchToProps)(Counter);
