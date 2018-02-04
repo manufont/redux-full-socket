@@ -6,8 +6,8 @@ import { createStore } from 'redux';
 import initClientStoreEnhancer from 'lib';
 
 const getSocketURL = socket =>
-	(window.location.protocol === 'https' ? 'wss' : 'ws') +
-	'://' + window.location.host + process.env.REACT_APP_BASE_ROUTE + socket;
+	(window.location.protocol === 'https:' ? 'wss:' : 'ws:') +
+	'//' + window.location.host + process.env.REACT_APP_BASE_ROUTE + socket;
 
 class RfsProvider extends Component {
 
