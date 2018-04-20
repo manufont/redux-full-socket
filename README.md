@@ -7,9 +7,9 @@ The purpose of this project is to extends redux life cycle outside the client wi
 Redux is used on both client and server in order to reuse client reducer. It has several benefits:
 - CRUD tasks only needs to be implemented once
 - The backend behaviour is entirely predictable: most server verifications may be avoided, resulting in an instant feedback for the client
-- Actions can be broadcasted to every client that shares the same channel (e.g mobile & destop), which lets you maintain a cross-device synced state
+- Actions can be broadcasted to every client that shares the same channel (e.g mobile & destop), which lets you maintain a synced state accross devices
 
-The server-side store can include additionnal reducers for server-specific tasks.
+The server-side store can include additionnal reducers for server-specific data (e.g. statistics).
 
 The library consists of a server and 2 redux store enhancers: one for the client, one for the server.
 
@@ -26,7 +26,7 @@ The library consists of a server and 2 redux store enhancers: one for the client
 
 By default, an action will be sent and dispatched to the server asynchronously, while dispatching it to the client store (short cycle). That way, the data is updated in real-time and the state is saved server-side.
 
-You can control how an action travel through the cycle by extending it with these properties :
+You can control how an action travels through the cycle by extending it with these properties :
 
 | Name | Type | Default | Description |
 |:-----|:-----|:--------|:------------|
@@ -40,7 +40,7 @@ You can control how an action travel through the cycle by extending it with thes
 
 The project is at its very beginning.
 
-For now, the server-side persistence is achieved by using [redux-persist](https://github.com/rt2zz/redux-persist) with a custom async storage using [node_redis](https://github.com/NodeRedis/node_redis).
+For now, the server-side persistence is achieved by using [redux-persist](https://github.com/rt2zz/redux-persist) with a custom async storage using [node_redis](https://github.com/NodeRedis/node_redis). In the long term, data will be persisted using the [event-sourcing](https://martinfowler.com/eaaDev/EventSourcing.html) pattern.
 
 The server-side state architecture needs to be improved.
 
