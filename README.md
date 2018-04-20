@@ -40,7 +40,7 @@ You can control how an action travels through the cycle by extending it with the
 
 The project is at its very beginning.
 
-For now, the server-side persistence is achieved by using [redux-persist](https://github.com/rt2zz/redux-persist) with a custom async storage using [node_redis](https://github.com/NodeRedis/node_redis). In the long term, data will be persisted using the [event-sourcing](https://martinfowler.com/eaaDev/EventSourcing.html) pattern.
+For now, the server-side persistence is achieved by using [redux-persist](https://github.com/rt2zz/redux-persist) with a custom async storage using [node_redis](https://github.com/NodeRedis/node_redis). In the long term, data will be persisted using an [event-sourcing](https://martinfowler.com/eaaDev/EventSourcing.html) pattern.
 
 The server-side state architecture needs to be improved.
 
