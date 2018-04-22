@@ -45,6 +45,10 @@
     "/rfs-snake": {
       "target": "http://localhost:4002",
       "ws": true
+    },
+    "/rfs-piano": {
+      "target": "http://localhost:4003",
+      "ws": true
     }
   }
 }

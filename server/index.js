@@ -3,6 +3,7 @@ import { createStore } from 'redux';
 import counterClientReducer from '../src/demos/counter/reducers';
 import arenaClientReducer from '../src/demos/arena/reducers';
 import snakeClientReducer from '../src/demos/snake/reducers';
+import pianoClientReducer from '../src/demos/piano/reducers';
 import counterServerReducer from './reducers';
 
 const counterStore = createStore(counterServerReducer, serverStoreEnhancer(counterClientReducer, 'rfs-counter:'));
@@ -16,3 +17,7 @@ console.log('All good, arena server running on port 4001.');
 const snakeStore = createStore({}, serverStoreEnhancer(snakeClientReducer, 'rfs-snake:'));
 const snakeServer = startServer(snakeStore, { port: 4002 });
 console.log('All good, snake server running on port 4002.');
+
+const pianoStore = createStore({}, serverStoreEnhancer(pianoClientReducer, 'rfs-piano:'));
+const pianoServer = startServer(pianoStore, { port: 4003 });
+console.log('All good, piano server running on port 4003.');

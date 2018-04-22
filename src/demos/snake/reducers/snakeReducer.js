@@ -83,7 +83,7 @@ const handleMove = (player, move, action, state) => {
   };
 }
 
-export default function arenaReducer(state=defaultState, action) {
+export default function snakeReducer(state=defaultState, action) {
   const player = action.payload;
   
   switch (action.type) {
