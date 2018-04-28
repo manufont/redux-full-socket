@@ -22,6 +22,8 @@ The library consists of a server and 2 redux store enhancers: one for the client
 
 [Snake](http://www.manufont.com/redux-full-socket/snake)
 
+[Piano](http://www.manufont.com/redux-full-socket/piano)
+
 ## actions API
 
 By default, an action will be sent and dispatched to the server asynchronously, while dispatching it to the client store (short cycle). That way, the data is updated in real-time and the state is saved server-side.
