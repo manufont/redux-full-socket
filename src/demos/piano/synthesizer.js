@@ -2,8 +2,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-console.log(audioCtx.baseLatency);//0.01
-console.log(audioCtx.outputLatency);
 
 const octave4 = {
 	'C': 261.63,
@@ -43,11 +41,14 @@ const frequencyFromKey = key => {
 class Sound extends React.PureComponent{
 
 	componentDidMount(){
-	    this.oscillator = audioCtx.createOscillator();
-
+		this.oscillator = audioCtx.createOscillator();	
 	    this.oscillator.type = 'sine';
 	    this.oscillator.frequency.setValueAtTime(this.props.frequency, audioCtx.currentTime); // value in hertz
-	    this.oscillator.connect(audioCtx.destination);
+	    this.gainNode = audioCtx.createGain();
+		this.gainNode.gain.setValueAtTime(1.0, audioCtx.currentTime);
+	    this.gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 1);
+	    this.oscillator.connect(this.gainNode);
+	    this.gainNode.connect(audioCtx.destination);
 	    this.oscillator.start();
 	}
 

@@ -20,34 +20,7 @@ const values = object => (
     Object.keys(object).map(key => object[key])
 )
 
-const octave4 = {
-	'C': 261.63,
-	'C#': 277.18,
-	'D': 293.66,
-	'D#': 311.13,
-	'E': 329.63,
-	'F': 349.23,
-	'F#': 369.99,
-	'G': 392,
-	'G#': 415.31,
-	'A': 440,
-	'A#': 466.16,
-	'B': 493.88
-};
-
 const octaveTones = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B']
-
-const getFrequency = (tone, octave) => (
-	octave4[tone] * Math.pow(2, octave - 4)
-);
-
-const isKeySharp = key => (
-	key.indexOf('#') !== -1
-);
-
-const getTone = key => (
-	key.replace('#', '')[0] + (isKeySharp(key) ? '#' : '')
-);
 
 const getPureTone = note => (
 	note.replace('#', '')[0]
@@ -57,13 +30,25 @@ const getOctave = note => (
 	parseInt(note.replace('#', '').substr(1), 0)
 );
 
-const frequencyFromNote = note => {
-	return getFrequency(getTone(note), getOctave(note));
-}
-
 const keysFromOctave = octave => (
 	octaveTones.map(tone => tone + octave)
 );
+
+
+const keyCodeToNote = {
+	KeyQ: 'C4', Digit2: 'C#4',
+	KeyW: 'D4', Digit3: 'D#4',
+	KeyE: 'E4',
+	KeyR: 'F4', Digit5: 'F#4',
+	KeyT: 'G4', Digit6: 'G#4',
+	KeyY: 'A4', Digit7: 'A#4',
+	KeyU: 'B4',
+	KeyI: 'C5', Digit9: 'C#5',
+	KeyO: 'D5', Digit0: 'D#5',
+	KeyP: 'E5',
+	BracketLeft: 'F5', Equal: 'F#5',
+	BracketRight: 'G5'
+}
 
 
 const styles = {
@@ -91,7 +76,32 @@ const styles = {
 	})
 }
 
+
 class Keyboard extends React.PureComponent{
+
+	componentDidMount(){
+		window.addEventListener("keydown", this.onKeydown, false);
+		window.addEventListener("keyup", this.onKeyup, false);
+	}
+
+	componentWillUnmount(){
+		window.removeEventListener("keydown", this.onKeydown);
+		window.removeEventListener("keyup", this.onKeyup);
+	}
+
+	onKeydown = e => {
+		const key = keyCodeToNote[e.code];
+		if(key){
+			this.pressKey(key)(e)
+		}
+	}
+
+	onKeyup = e => {
+		const key = keyCodeToNote[e.code];
+		if(key){
+			this.releaseKey(key)(e)
+		}
+	}
 
 	pressKey = key => e => {
 		if(!this.props.pressedKeys[key]){
